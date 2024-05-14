@@ -3,7 +3,6 @@ package course.oop.gui;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
-import java.util.ResourceBundle;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -11,7 +10,7 @@ import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
 
 import course.oop.locale.UserLocale;
-import course.oop.locale.UserLocaleManager;
+import course.oop.locale.LocaleManager;
 import course.oop.log.Logger;
 
 /**
@@ -20,15 +19,12 @@ import course.oop.log.Logger;
  */
 public class MainMenuBar extends JMenuBar {
     private final MainApplicationFrame mainFrame;
-    private ResourceBundle bundle;
 
     /**
      * Создает меню для переданного главного окна
      */
     public MainMenuBar(MainApplicationFrame mainFrame) {
         this.mainFrame = mainFrame;
-        bundle = UserLocaleManager.getCurrentBundle();
-
         add(createViewModeMenu());
         add(createTestsMenu());
         add(createSettingMenu());
@@ -39,19 +35,20 @@ public class MainMenuBar extends JMenuBar {
      * Создает пункт меню с режимами отображения.
      */
     private JMenu createViewModeMenu() {
-        JMenu ret = new JMenu(bundle.getString("view_mode_menu"));
+        LocaleManager localeManager = LocaleManager.getInstance();
+        JMenu ret = new JMenu(localeManager.getString("view_mode_menu"));
         ret.setMnemonic(KeyEvent.VK_V);
         ret.getAccessibleContext().setAccessibleDescription(
-                bundle.getString("view_mode_menu.accessible_description"));
+                localeManager.getString("view_mode_menu.accessible_description"));
 
-        JMenuItem systemSchemeMenuItem = new JMenuItem(bundle.getString("system_scheme"), KeyEvent.VK_S);
+        JMenuItem systemSchemeMenuItem = new JMenuItem(localeManager.getString("system_scheme"), KeyEvent.VK_S);
         systemSchemeMenuItem.addActionListener((event) -> {
             mainFrame.setSystemLookAndFeel();
             this.invalidate();
         });
         ret.add(systemSchemeMenuItem);
 
-        JMenuItem crossplatformLookAndFeel = new JMenuItem(bundle.getString("universal_scheme"), KeyEvent.VK_U);
+        JMenuItem crossplatformLookAndFeel = new JMenuItem(localeManager.getString("universal_scheme"), KeyEvent.VK_U);
         crossplatformLookAndFeel.addActionListener((event) -> {
             mainFrame.setCrossPlatformLookAndFeel();
             this.invalidate();
@@ -64,13 +61,14 @@ public class MainMenuBar extends JMenuBar {
      * Создает пункт меню с тестированием программы.
      */
     private JMenu createTestsMenu() {
-        JMenu ret = new JMenu(bundle.getString("test_menu"));
+        LocaleManager localeManager = LocaleManager.getInstance();
+        JMenu ret = new JMenu(localeManager.getString("test_menu"));
         ret.setMnemonic(KeyEvent.VK_T);
         ret.getAccessibleContext().setAccessibleDescription(
-                bundle.getString("test_menu.accessible_description"));
-        JMenuItem addLogMessageItem = new JMenuItem(bundle.getString("log_message"), KeyEvent.VK_M);
+                localeManager.getString("test_menu.accessible_description"));
+        JMenuItem addLogMessageItem = new JMenuItem(localeManager.getString("log_message"), KeyEvent.VK_M);
         addLogMessageItem.addActionListener((event) -> {
-            Logger.debug(bundle.getString("log.new_string"));
+            Logger.debug(localeManager.getString("log.new_string"));
         });
         ret.add(addLogMessageItem);
         return ret;
@@ -80,10 +78,11 @@ public class MainMenuBar extends JMenuBar {
      * 
      */
     private JMenu createSettingMenu() {
-        JMenu ret = new JMenu(bundle.getString("settings_menu"));
+        LocaleManager localeManager = LocaleManager.getInstance();
+        JMenu ret = new JMenu(localeManager.getString("settings_menu"));
         ret.setMnemonic(KeyEvent.VK_I);
         ret.getAccessibleContext().setAccessibleDescription(
-                bundle.getString("settings_menu.accessible_description"));
+                localeManager.getString("settings_menu.accessible_description"));
         ret.add(createChangeLanguageItem());
         return ret;
     }
@@ -95,19 +94,20 @@ public class MainMenuBar extends JMenuBar {
      * Старое чистится сборщиком мусора и уходит с миром.
      */
     private JMenuItem createChangeLanguageItem() {
-        JMenuItem changeLanguageItem = new JMenuItem(bundle.getString("settings_menu.change_lang"), KeyEvent.VK_M);
+        LocaleManager localeManager = LocaleManager.getInstance();
+        JMenuItem changeLanguageItem = new JMenuItem(localeManager.getString("settings_menu.change_lang"),
+                KeyEvent.VK_M);
         changeLanguageItem.addActionListener((event) -> {
             SelectLanguageDialog userDialog = new SelectLanguageDialog(mainFrame);
             UserLocale result = userDialog.getChoosedUserLocale();
-            if (result != null && UserLocaleManager.getCurrentLocale() != result) {
-                UserLocaleManager.setUserLocale(result);
-                mainFrame.saveWindowStates();
+            if (result != null && localeManager.getCurrentLocale() != result) {
+                localeManager.setUserLocale(result);
                 mainFrame.dispose();
                 SwingUtilities.invokeLater(() -> {
                     MainApplicationFrame frame = new MainApplicationFrame();
                     frame.setVisible(true);
                 });
-                Logger.debug(UserLocaleManager.getCurrentBundle().getString("log.change_lang"));
+                Logger.debug(localeManager.getString("log.change_lang"));
             }
         });
         return changeLanguageItem;
@@ -117,11 +117,12 @@ public class MainMenuBar extends JMenuBar {
      * Создает пункт меню c функцией выхода из программы.
      */
     private JMenu createQuitMenu() {
-        JMenu ret = new JMenu(bundle.getString("quit_menu"));
+        LocaleManager localeManager = LocaleManager.getInstance();
+        JMenu ret = new JMenu(localeManager.getString("quit_menu"));
         ret.setMnemonic(KeyEvent.VK_Q);
         ret.getAccessibleContext().setAccessibleDescription(
-                bundle.getString("quit_menu.accessible_description"));
-        JMenuItem quitItem = new JMenuItem(bundle.getString("quit_menu"), KeyEvent.VK_Q);
+                localeManager.getString("quit_menu.accessible_description"));
+        JMenuItem quitItem = new JMenuItem(localeManager.getString("quit_menu"), KeyEvent.VK_Q);
         quitItem.addActionListener((event) -> {
             WindowEvent closeEvent = new WindowEvent(mainFrame, WindowEvent.WINDOW_CLOSING);
             Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(closeEvent);

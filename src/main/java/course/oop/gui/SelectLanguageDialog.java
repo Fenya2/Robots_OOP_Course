@@ -1,14 +1,13 @@
 package course.oop.gui;
 
 import course.oop.locale.UserLocale;
-import course.oop.locale.UserLocaleManager;
+import course.oop.locale.LocaleManager;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ResourceBundle;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -36,15 +35,15 @@ public class SelectLanguageDialog extends JDialog {
      */
     public SelectLanguageDialog(Frame parent) {
         super(parent, "0", true);
-        ResourceBundle bundle = UserLocaleManager.getCurrentBundle();
-        setTitle(bundle.getString("select_lang_dialog"));
+        LocaleManager localeManager = LocaleManager.getInstance();
+        setTitle(localeManager.getString("select_language_dialog.title"));
         setLayout(new BorderLayout());
 
         ButtonGroup group = new ButtonGroup();
         JRadioButton optionEn = new JRadioButton(UserLocale.EN.toString());
         JRadioButton optionRu = new JRadioButton(UserLocale.RU.toString());
 
-        switch (UserLocaleManager.getCurrentLocale()) {
+        switch (localeManager.getCurrentLocale()) {
             case EN:
                 optionEn.setSelected(true);
                 break;
@@ -66,7 +65,7 @@ public class SelectLanguageDialog extends JDialog {
         JPanel execPanel = new JPanel();
         execPanel.setLayout(new GridLayout(1, 2));
 
-        JButton submitButton = new JButton(bundle.getString("select_lang_dialog_submit"));
+        JButton submitButton = new JButton(localeManager.getString("select_language_dialog.submit"));
         submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (optionEn.isSelected()) {
@@ -78,7 +77,7 @@ public class SelectLanguageDialog extends JDialog {
             }
         });
 
-        JButton cancelButton = new JButton(bundle.getString("select_lang_dialog_cancel"));
+        JButton cancelButton = new JButton(localeManager.getString("select_language_dialog.cancel"));
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();

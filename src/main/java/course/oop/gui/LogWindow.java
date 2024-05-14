@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 
-import course.oop.locale.UserLocaleManager;
+import course.oop.locale.LocaleManager;
 import course.oop.log.LogChangeListener;
 import course.oop.log.LogEntry;
 import course.oop.log.LogJournal;
@@ -37,10 +37,10 @@ public class LogWindow extends JInternalFrame implements Saveable, LogChangeList
     private SimpleDateFormat logDateFormat;
 
     public LogWindow(LogJournal logSource) {
-        super(UserLocaleManager.getCurrentBundle().getString("log_window_name"), true, true, true, true);
+        super(LocaleManager.getInstance().getString("log_window.title"), true, true, true, true);
         setLocation(0, 0);
         setSize(500, 500);
-        Logger.debug(UserLocaleManager.getCurrentBundle().getString("log.protocols_works"));
+        Logger.debug(LocaleManager.getInstance().getString("log.protocols_works"));
         this.logSource = logSource;
         logSource.registerListener(this);
         logContent = new TextArea("");

@@ -7,7 +7,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
@@ -18,7 +17,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import course.oop.controller.GameController;
-import course.oop.locale.UserLocaleManager;
+import course.oop.locale.LocaleManager;
 import course.oop.log.Logger;
 import course.oop.model.GameModel;
 import course.oop.saving.Saveable;
@@ -41,18 +40,22 @@ public class MainApplicationFrame extends JFrame implements Saveable {
      * Создает главное окно программы
      */
     public MainApplicationFrame() {
+        LocaleManager localeManager = LocaleManager.getInstance();
         try {
             UIManager.put("OptionPane.yesButtonText",
-                    UserLocaleManager.getCurrentBundle().getString("option_pane_yes"));
-            UIManager.put("OptionPane.noButtonText", UserLocaleManager.getCurrentBundle().getString("option_pane_no"));
+                    localeManager.getString("option_pane_yes"));
+            UIManager.put("OptionPane.noButtonText", localeManager.getString("option_pane_no"));
+        } catch (Exception e) {
+            System.err.println("Не удалось изменить заголовки JOptionPane.");
+            e.printStackTrace();
+        }
+        try {
             UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
         } catch (Exception e) {
+            System.err.println("Не удалось задать визуальный стиль программы");
             e.printStackTrace();
         }
         childs = new ArrayList<>();
-        /**
-         * Модель игры
-         */
 
         // Make the big window be indented 50 pixels from each edge
         // of the screen.
@@ -120,14 +123,13 @@ public class MainApplicationFrame extends JFrame implements Saveable {
      * Выполняет процедуру выхода из программы.
      */
     private void startExitDialog() {
-        ResourceBundle bundle = UserLocaleManager.getCurrentBundle();
+        LocaleManager localeManager = LocaleManager.getInstance();
         int userChoice = JOptionPane.showConfirmDialog(
                 this,
-                bundle.getString("exit_dialog.are_you_sure"),
-                bundle.getString("exit_dialog.exit"),
+                localeManager.getString("exit_dialog.are_you_sure"),
+                localeManager.getString("exit_dialog.exit"),
                 JOptionPane.YES_NO_OPTION);
         if (userChoice == JOptionPane.YES_OPTION) {
-            saveWindowStates();
             this.dispose();
             setDefaultCloseOperation(EXIT_ON_CLOSE);
         }
@@ -147,7 +149,7 @@ public class MainApplicationFrame extends JFrame implements Saveable {
     /**
      * Сохраняет состояния дочерних окон и главного окна.
      */
-    public void saveWindowStates() {
+    private void saveWindowStates() {
         FrameStatesManager frameSaver = new FrameStatesManager();
         frameSaver.addSaveableFrame(this);
         for (Component component : childs)
@@ -172,6 +174,7 @@ public class MainApplicationFrame extends JFrame implements Saveable {
             frameLoader.loadStates();
         } catch (LoadException e) {
             System.err.println("Не удалось загрузить состояния окон из файла конфигурации");
+            e.printStackTrace();
             return;
         }
 
@@ -194,6 +197,16 @@ public class MainApplicationFrame extends JFrame implements Saveable {
                 }
             }
         }
+    }
+
+    /**
+     * Переопределяет удаление окна с обязательным сохранением окон
+     * Сохраняет состояния окон перед удалением
+     */
+    @Override
+    public void dispose() {
+        saveWindowStates();
+        super.dispose();
     }
 
     /**
