@@ -37,10 +37,10 @@ public class LogWindow extends JInternalFrame implements Saveable, LogChangeList
     private SimpleDateFormat logDateFormat;
 
     public LogWindow(LogJournal logSource) {
-        super(LocaleManager.getInstance().getString("log_window.title"), true, true, true, true);
+        super(LocaleManager.getString("log_window.title"), true, true, true, true);
         setLocation(0, 0);
         setSize(500, 500);
-        Logger.debug(LocaleManager.getInstance().getString("log.protocols_works"));
+        Logger.debug(LocaleManager.getString("log.protocols_works"));
         this.logSource = logSource;
         logSource.registerListener(this);
         logContent = new TextArea("");

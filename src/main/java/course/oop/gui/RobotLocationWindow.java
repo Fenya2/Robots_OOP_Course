@@ -36,7 +36,7 @@ public class RobotLocationWindow extends JInternalFrame implements Saveable, Pro
      * Создает окно, подписывается на изменения переданной модели.
      */
     public RobotLocationWindow(GameModel gameModel) {
-        super(LocaleManager.getInstance().getString("robot_location_window.title"), true, true, true, true);
+        super(LocaleManager.getString("robot_location_window.title"), true, true, true, true);
         gameModel.addPropertyChangeListener(this);
 
         setLocation(1000, 0);
@@ -51,7 +51,7 @@ public class RobotLocationWindow extends JInternalFrame implements Saveable, Pro
         panel.add(yCoordValue);
 
         setLayout(new BorderLayout());
-        add(new JLabel(LocaleManager.getInstance().getString("robot_location_window.title"), SwingConstants.CENTER),
+        add(new JLabel(LocaleManager.getString("robot_location_window.title"), SwingConstants.CENTER),
                 BorderLayout.NORTH);
         add(panel, BorderLayout.CENTER);
     }

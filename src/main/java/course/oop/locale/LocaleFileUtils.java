@@ -1,21 +1,15 @@
 package course.oop.locale;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 import org.apache.commons.io.FileUtils;
 
 /**
  * Вспомогательные функции для работы LocaleManager (не требуют состояния)
  */
-class LocaleUtils {
+class LocaleFileUtils {
     /**
      * Возвращает строку из первых двух символов файла
      * $HOME/Robots/config/locale.conf (в кодировке UTF-8).
@@ -23,21 +17,14 @@ class LocaleUtils {
      * возвращает локаль по умолчанию - английскую
      */
     public static UserLocale loadLocale(File localeFile) {
-        try (Reader reader = new InputStreamReader(new FileInputStream(localeFile), StandardCharsets.UTF_8)) {
-            char[] buff = new char[2];
-            if (reader.read(buff, 0, 2) != 2) {
-                System.err.println("locale file is too small");
-                return UserLocale.EN;
-            }
-            try {
-                return UserLocale.valueOf(new String(buff));
-            } catch (IllegalArgumentException e) {
-                System.err.println("Incorrect locale type");
-                e.printStackTrace();
-                return UserLocale.EN;
-            }
+        try {
+            return UserLocale.valueOf(Files.readString(localeFile.toPath()));
         } catch (IOException e) {
-            System.err.println("locale file is not exist.");
+            System.err.println("can't load locale");
+            e.printStackTrace();
+            return UserLocale.EN;
+        } catch (IllegalArgumentException e) {
+            System.err.println("can't recover locale from file data");
             e.printStackTrace();
             return UserLocale.EN;
         }
@@ -52,12 +39,13 @@ class LocaleUtils {
         } catch (IOException e) {
             System.err.println("can't create directories to localeFile");
             e.printStackTrace();
+            return;
         }
-        try (BufferedWriter writer = new BufferedWriter(
-                new OutputStreamWriter(new FileOutputStream(localeFile), StandardCharsets.UTF_8))) {
-            writer.write(locale.toString());
+
+        try {
+            Files.writeString(localeFile.toPath(), locale.toString());
         } catch (IOException e) {
-            System.err.println("can't save user locale");
+            System.err.println("can't save locale to file");
             e.printStackTrace();
         }
     }

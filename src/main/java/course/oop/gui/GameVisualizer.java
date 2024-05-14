@@ -47,7 +47,7 @@ public class GameVisualizer extends JPanel implements PropertyChangeListener {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                Logger.debug(LocaleManager.getInstance().getString("logger.target_changed_controller"));
+                Logger.debug(LocaleManager.getString("logger.target_changed_controller"));
                 gameController.targetUpdate(e.getPoint());
                 repaint();
             }

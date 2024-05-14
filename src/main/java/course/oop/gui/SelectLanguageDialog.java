@@ -35,15 +35,14 @@ public class SelectLanguageDialog extends JDialog {
      */
     public SelectLanguageDialog(Frame parent) {
         super(parent, "0", true);
-        LocaleManager localeManager = LocaleManager.getInstance();
-        setTitle(localeManager.getString("select_language_dialog.title"));
+        setTitle(LocaleManager.getString("select_language_dialog.title"));
         setLayout(new BorderLayout());
 
         ButtonGroup group = new ButtonGroup();
         JRadioButton optionEn = new JRadioButton(UserLocale.EN.toString());
         JRadioButton optionRu = new JRadioButton(UserLocale.RU.toString());
 
-        switch (localeManager.getCurrentLocale()) {
+        switch (LocaleManager.getInstance().getCurrentLocale()) {
             case EN:
                 optionEn.setSelected(true);
                 break;
@@ -65,7 +64,7 @@ public class SelectLanguageDialog extends JDialog {
         JPanel execPanel = new JPanel();
         execPanel.setLayout(new GridLayout(1, 2));
 
-        JButton submitButton = new JButton(localeManager.getString("select_language_dialog.submit"));
+        JButton submitButton = new JButton(LocaleManager.getString("select_language_dialog.submit"));
         submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (optionEn.isSelected()) {
@@ -77,7 +76,7 @@ public class SelectLanguageDialog extends JDialog {
             }
         });
 
-        JButton cancelButton = new JButton(localeManager.getString("select_language_dialog.cancel"));
+        JButton cancelButton = new JButton(LocaleManager.getString("select_language_dialog.cancel"));
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();

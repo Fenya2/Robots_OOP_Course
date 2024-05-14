@@ -123,11 +123,10 @@ public class MainApplicationFrame extends JFrame implements Saveable {
      * Выполняет процедуру выхода из программы.
      */
     private void startExitDialog() {
-        LocaleManager localeManager = LocaleManager.getInstance();
         int userChoice = JOptionPane.showConfirmDialog(
                 this,
-                localeManager.getString("exit_dialog.are_you_sure"),
-                localeManager.getString("exit_dialog.exit"),
+                LocaleManager.getString("exit_dialog.are_you_sure"),
+                LocaleManager.getString("exit_dialog.exit"),
                 JOptionPane.YES_NO_OPTION);
         if (userChoice == JOptionPane.YES_OPTION) {
             this.dispose();

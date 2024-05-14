@@ -21,6 +21,14 @@ public class LocaleManager {
      */
     private UserLocale currentLocale;
 
+    /**
+     * Хранит ресурсы со связанной currentLocale
+     */
+    private ResourceBundle currentBundle;
+
+    /**
+     * Файл, куда сохраняется локаль пользователя
+     */
     private File userLocaleFile;
 
     private LocaleManager() {
@@ -29,17 +37,15 @@ public class LocaleManager {
                         File.separator + "Robots" +
                         File.separator + "config" +
                         File.separator + "locale.conf");
-        currentLocale = LocaleUtils.loadLocale(userLocaleFile);
+        currentLocale = LocaleFileUtils.loadLocale(userLocaleFile);
+        currentBundle = getBundleWithCurrentLocale();
     }
 
     /**
-     * Возвращает текущие ресурсы со связанной текущей локалью.
-     * ResourceBundle.getBundle() кешируется, так что его вызов не вызывает
-     * частое чтение файла (хотя он еще и потокобезопасный, но я не заметил,
-     * что это влияет на производительность). Если по каким-то причинам
-     * currentUserLocale null, возвращаются ресурсы на английском.
+     * Возвращает Ресурсы со связанной текущей локалью. Если
+     * currentLocale null, возвращаются ресурсы на английском.
      */
-    private ResourceBundle getBundle() {
+    private ResourceBundle getBundleWithCurrentLocale() {
         switch (currentLocale) {
             case EN:
                 return ResourceBundle.getBundle("locales/en", new Locale("en"));
@@ -49,17 +55,21 @@ public class LocaleManager {
         return ResourceBundle.getBundle("locales/en", new Locale("en"));
     }
 
+    /**
+     * Возвращает установленную локаль
+     */
     public UserLocale getCurrentLocale() {
         return currentLocale;
     }
 
     /**
-     * Изменяет текущую локаль,
+     * Изменяет текущую локаль и ресурсы, связанные с ней.
      * сохраняет ее в файл конфигурации
      */
-    public void setUserLocale(UserLocale userLocale) {
+    public void setAndSaveUserLocale(UserLocale userLocale) {
         currentLocale = userLocale;
-        LocaleUtils.saveLocale(userLocale, userLocaleFile);
+        currentBundle = getBundleWithCurrentLocale();
+        LocaleFileUtils.saveLocale(userLocale, userLocaleFile);
     }
 
     /**
@@ -70,9 +80,17 @@ public class LocaleManager {
     }
 
     /**
+     * Возвращает строку ресурсов со связанной текущей локалью по ключу,
+     * (для удобства)
+     */
+    public static String getString(String key) {
+        return instance.getResourceString(key);
+    }
+
+    /**
      * Возвращает строку ресурсов со связанной текущей локалью по ключу
      */
-    public String getString(String key) {
-        return getBundle().getString(key);
+    public String getResourceString(String key) {
+        return currentBundle.getString(key);
     }
 }

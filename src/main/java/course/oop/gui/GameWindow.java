@@ -14,7 +14,7 @@ public class GameWindow extends JInternalFrame implements Saveable {
     private final GameVisualizer m_visualizer;
 
     public GameWindow(GameController gameController, GameModel gameModel) {
-        super(LocaleManager.getInstance().getString("game_window.title"), true, true, true, true);
+        super(LocaleManager.getString("game_window.title"), true, true, true, true);
         setLocation(500, 0);
         setSize(500, 500);
         m_visualizer = new GameVisualizer(gameController, gameModel);

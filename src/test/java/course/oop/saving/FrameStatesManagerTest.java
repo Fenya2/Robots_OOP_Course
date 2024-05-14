@@ -81,7 +81,7 @@ public class FrameStatesManagerTest {
 
         File oldLocation = frameStatesManager.getSaveLocation();
 
-        MainApplicationFrame mainApplicationFrame = new MainApplicationFrame();
+        MainApplicationFrame mainApplicationFrame = new MainApplicationFrame(); // TODO сделать mock
         mainApplicationFrame.setSize(new Dimension(1, 2));
         mainApplicationFrame.setLocation(new Point(3, 4));
 
