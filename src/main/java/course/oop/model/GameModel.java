@@ -5,8 +5,6 @@ import java.beans.PropertyChangeSupport;
 
 import javax.vecmath.Vector2d;
 
-import course.oop.log.Logger;
-
 /**
  * Класс, хранящий состояние игры,
  * предоставляющий интерфейс для изменения ее состояния.
@@ -28,7 +26,7 @@ public class GameModel {
      * При угле между направлением робота и вектором разности робота и цели
      * меньшем, чем это число, считаем, что угол между
      * направлением робота и вектором разности робота и цели равен 0
-     */ 
+     */
     private final double angularEpsilon = 0.001;
     /**
      * <b>расстояние</b>, которое робот может пройти за такт
@@ -116,7 +114,6 @@ public class GameModel {
 
     public void setTarget(Vector2d target) {
         this.target = new Vector2d(target.x, target.y);
-        Logger.debug("model: target updated");
     }
 
     /**

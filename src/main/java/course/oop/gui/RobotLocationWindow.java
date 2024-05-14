@@ -1,7 +1,7 @@
 package course.oop.gui;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
@@ -13,6 +13,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.vecmath.Vector2d;
 
+import course.oop.locale.LocaleManager;
 import course.oop.model.GameModel;
 import course.oop.model.GameModelEvents;
 import course.oop.saving.Saveable;
@@ -22,9 +23,9 @@ import course.oop.saving.Saveable;
  */
 public class RobotLocationWindow extends JInternalFrame implements Saveable, PropertyChangeListener {
     /** Координата x робота */
-    private JLabel xCoord;
+    private JLabel xCoordValue;
     /** Координата y робота */
-    private JLabel yCoord;
+    private JLabel yCoordValue;
 
     /**
      * Формат вывода координат робота
@@ -35,21 +36,23 @@ public class RobotLocationWindow extends JInternalFrame implements Saveable, Pro
      * Создает окно, подписывается на изменения переданной модели.
      */
     public RobotLocationWindow(GameModel gameModel) {
-        super("Internal Frame", true, true, true, true);
+        super(LocaleManager.getString("robot_location_window.title"), true, true, true, true);
         gameModel.addPropertyChangeListener(this);
 
-        setLocation(800, 0);
-        setSize(200, 100);
+        setLocation(1000, 0);
+        setSize(300, 100);
 
-        xCoord = new JLabel("x");
-        yCoord = new JLabel("y");
-
-        JPanel panel = new JPanel(new FlowLayout());
-        panel.add(xCoord);
-        panel.add(yCoord);
+        JPanel panel = new JPanel(new GridLayout(2, 2));
+        panel.add(new JLabel("x"));
+        xCoordValue = new JLabel("0");
+        panel.add(xCoordValue);
+        panel.add(new JLabel("y"));
+        yCoordValue = new JLabel("0");
+        panel.add(yCoordValue);
 
         setLayout(new BorderLayout());
-        add(new JLabel("Robot coordinates", SwingConstants.CENTER), BorderLayout.NORTH);
+        add(new JLabel(LocaleManager.getString("robot_location_window.title"), SwingConstants.CENTER),
+                BorderLayout.NORTH);
         add(panel, BorderLayout.CENTER);
     }
 
@@ -72,8 +75,8 @@ public class RobotLocationWindow extends JInternalFrame implements Saveable, Pro
     private void updateModelView(GameModel gameModel) {
         Vector2d robot = gameModel.getRobot();
         SwingUtilities.invokeLater(() -> {
-            xCoord.setText("x: " + doubleFormatter.format(robot.x));
-            yCoord.setText("y: " + doubleFormatter.format(robot.y));
+            xCoordValue.setText(doubleFormatter.format(robot.x));
+            yCoordValue.setText(doubleFormatter.format(robot.y));
         });
     }
 }

@@ -125,6 +125,7 @@ public class FrameStatesManager {
     /**
      * Читает указанный конфигурационный файл, заполняя внутреннее поле states
      */
+    @SuppressWarnings("unchecked")
     public void loadStates() throws LoadException {
         try {
             InputStream is = new FileInputStream(saveLocation);
@@ -133,7 +134,12 @@ public class FrameStatesManager {
                 states = (HashMap<String, FrameConfig>) ois.readObject();
             } catch (ClassNotFoundException e) {
                 throw new LoadException("Не удалось прочитать файл. класс hashmap не нашелся.");
-            } finally {
+            } catch (ClassCastException e) {
+                throw new LoadException("не удалось выполнить преобразование к типу");
+            } catch (Exception e) {
+                throw new LoadException("unsupported exception");
+            }
+            finally {
                 ois.close();
                 is.close();
             }

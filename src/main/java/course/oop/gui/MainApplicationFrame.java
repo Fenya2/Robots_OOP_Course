@@ -17,6 +17,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import course.oop.controller.GameController;
+import course.oop.locale.LocaleManager;
 import course.oop.log.Logger;
 import course.oop.model.GameModel;
 import course.oop.saving.Saveable;
@@ -39,10 +40,22 @@ public class MainApplicationFrame extends JFrame implements Saveable {
      * Создает главное окно программы
      */
     public MainApplicationFrame() {
+        LocaleManager localeManager = LocaleManager.getInstance();
+        try {
+            UIManager.put("OptionPane.yesButtonText",
+                    localeManager.getString("option_pane_yes"));
+            UIManager.put("OptionPane.noButtonText", localeManager.getString("option_pane_no"));
+        } catch (Exception e) {
+            System.err.println("Не удалось изменить заголовки JOptionPane.");
+            e.printStackTrace();
+        }
+        try {
+            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+        } catch (Exception e) {
+            System.err.println("Не удалось задать визуальный стиль программы");
+            e.printStackTrace();
+        }
         childs = new ArrayList<>();
-        /**
-         * Модель игры
-         */
 
         // Make the big window be indented 50 pixels from each edge
         // of the screen.
@@ -112,11 +125,10 @@ public class MainApplicationFrame extends JFrame implements Saveable {
     private void startExitDialog() {
         int userChoice = JOptionPane.showConfirmDialog(
                 this,
-                "Вы уверены?",
-                "Выйти",
+                LocaleManager.getString("exit_dialog.are_you_sure"),
+                LocaleManager.getString("exit_dialog.exit"),
                 JOptionPane.YES_NO_OPTION);
         if (userChoice == JOptionPane.YES_OPTION) {
-            saveWindowStates();
             this.dispose();
             setDefaultCloseOperation(EXIT_ON_CLOSE);
         }
@@ -184,6 +196,16 @@ public class MainApplicationFrame extends JFrame implements Saveable {
                 }
             }
         }
+    }
+
+    /**
+     * Переопределяет удаление окна с обязательным сохранением окон
+     * Сохраняет состояния окон перед удалением
+     */
+    @Override
+    public void dispose() {
+        saveWindowStates();
+        super.dispose();
     }
 
     /**
