@@ -1,12 +1,10 @@
 package course.oop.gui;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
-import java.text.MessageFormat;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
