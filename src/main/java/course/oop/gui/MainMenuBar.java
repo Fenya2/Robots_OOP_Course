@@ -75,7 +75,7 @@ public class MainMenuBar extends JMenuBar {
     }
 
     /**
-     * 
+     * Создает пункт меню настроек
      */
     private JMenu createSettingMenu() {
         LocaleManager localeManager = LocaleManager.getInstance();
