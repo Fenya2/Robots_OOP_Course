@@ -45,7 +45,6 @@ class LocaleUtils {
 
     /**
      * Сохраняет локаль, предпочитаемую пользователем в файл конфигурации
-     * $HOME/Robots/config/locale.conf (в кодировке UTF-8)
      */
     public static void saveLocale(UserLocale locale, File localeFile) {
         try {

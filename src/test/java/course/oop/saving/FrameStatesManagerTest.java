@@ -44,9 +44,6 @@ public class FrameStatesManagerTest {
                         // Чтобы не забивать stdout
                 }
         }));
-        
-        File conFile = new FrameStatesManager().getSaveLocation();
-        conFile.delete();
     }
 
     /**
