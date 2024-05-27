@@ -30,14 +30,8 @@ import course.oop.saving.SaveException;
  */
 public class MainApplicationFrame extends JFrame implements Saveable {
     /**
-     * Контейнер, хранящий ссылки на окна-потомки
-     * (так как при сворачивании окон, swing оказывается их убивает.
-     * Следовательно Нужно сохранять ссылки на них)
-     */
-    private final List<Component> childs;
-
-    /**
-     * Создает главное окно программы
+     * Создает главное окно программы c моделью по умолчанию
+     * (которую писали весь семестр)
      */
     public MainApplicationFrame() {
         LocaleManager localeManager = LocaleManager.getInstance();
@@ -55,7 +49,6 @@ public class MainApplicationFrame extends JFrame implements Saveable {
             System.err.println("Не удалось задать визуальный стиль программы");
             e.printStackTrace();
         }
-        childs = new ArrayList<>();
 
         // Make the big window be indented 50 pixels from each edge
         // of the screen.
@@ -141,7 +134,6 @@ public class MainApplicationFrame extends JFrame implements Saveable {
      */
     private void addWindow(JInternalFrame frame) {
         getContentPane().add(frame);
-        childs.add(frame);
         frame.setVisible(true);
     }
 
@@ -151,7 +143,7 @@ public class MainApplicationFrame extends JFrame implements Saveable {
     private void saveWindowStates() {
         FrameStatesManager frameSaver = new FrameStatesManager();
         frameSaver.addSaveableFrame(this);
-        for (Component component : childs)
+        for (Component component : getContentPane().getComponents())
             if (component instanceof Saveable saveable)
                 frameSaver.addSaveableFrame(saveable);
 
@@ -185,7 +177,7 @@ public class MainApplicationFrame extends JFrame implements Saveable {
             e.printStackTrace();
         }
 
-        for (Component component : childs) {
+        for (Component component : getContentPane().getComponents()) {
             if (component instanceof Saveable saveable) {
                 try {
                     frameLoader.loadFrame(saveable);
