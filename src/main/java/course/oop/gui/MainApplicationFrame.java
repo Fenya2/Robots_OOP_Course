@@ -5,8 +5,6 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
@@ -20,6 +18,7 @@ import course.oop.controller.GameController;
 import course.oop.locale.LocaleManager;
 import course.oop.log.Logger;
 import course.oop.model.GameModel;
+import course.oop.moduleLoad.IModelService;
 import course.oop.saving.Saveable;
 import course.oop.saving.FrameStatesManager;
 import course.oop.saving.LoadException;
@@ -34,11 +33,10 @@ public class MainApplicationFrame extends JFrame implements Saveable {
      * (которую писали весь семестр)
      */
     public MainApplicationFrame() {
-        LocaleManager localeManager = LocaleManager.getInstance();
         try {
             UIManager.put("OptionPane.yesButtonText",
-                    localeManager.getString("option_pane_yes"));
-            UIManager.put("OptionPane.noButtonText", localeManager.getString("option_pane_no"));
+                    LocaleManager.getString("option_pane_yes"));
+            UIManager.put("OptionPane.noButtonText", LocaleManager.getString("option_pane_no"));
         } catch (Exception e) {
             System.err.println("Не удалось изменить заголовки JOptionPane.");
             e.printStackTrace();
@@ -77,6 +75,18 @@ public class MainApplicationFrame extends JFrame implements Saveable {
         });
 
         gameController.start();
+    }
+
+    /**
+     * Подменяет представление, взяв его из переданного сервиса.
+     */
+    public void changeModel(IModelService modelService) {
+        getContentPane().removeAll();
+        for (JInternalFrame frame : modelService.getViews()) {
+            getContentPane().add(frame);
+        }
+        revalidate();
+        repaint();
     }
 
     /**

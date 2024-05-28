@@ -1,5 +1,7 @@
 package course.oop.gui;
 
+import java.io.File;
+
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
@@ -8,10 +10,14 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
+import javax.swing.JFileChooser;
 
 import course.oop.locale.UserLocale;
 import course.oop.locale.LocaleManager;
 import course.oop.log.Logger;
+import course.oop.moduleLoad.IModelService;
+import course.oop.moduleLoad.LoaderUtils;
+import course.oop.moduleLoad.ServiceLoadException;
 
 /**
  * Главная строка меню программы.
@@ -25,10 +31,51 @@ public class MainMenuBar extends JMenuBar {
      */
     public MainMenuBar(MainApplicationFrame mainFrame) {
         this.mainFrame = mainFrame;
+        add(createLoadModelMenu());
         add(createViewModeMenu());
         add(createTestsMenu());
         add(createSettingMenu());
         add(createQuitMenu());
+    }
+
+    /**
+     * Возвращает пункт меню с навешанными обработчиками для загрузки модели.
+     * Также добавляет пункт меню вернуться к изначальной модели.
+     */
+    private JMenu createLoadModelMenu() {
+        JMenu ret = new JMenu(LocaleManager.getString("load_model_menu"));
+        ret.setMnemonic(KeyEvent.VK_L);
+        JMenuItem loadFromJarItem = new JMenuItem(LocaleManager.getString("load_model_menu_from_jar"), KeyEvent.VK_J);
+        loadFromJarItem.addActionListener((event) -> {
+            JFileChooser fileDialog = new JFileChooser();
+            int callback = fileDialog.showDialog(null, LocaleManager.getString("load_model_menu_open_file"));
+            if (callback == JFileChooser.APPROVE_OPTION) {
+                File file = fileDialog.getSelectedFile();
+                IModelService modelService = null;
+                try {
+                    modelService = LoaderUtils.loadModelServiceFromJar(file);
+                } catch (ServiceLoadException e) {
+                    e.printStackTrace();
+                }
+                if (modelService != null) {
+                    modelService.init(file);
+                    mainFrame.changeModel(modelService);
+                    modelService.start();
+                }
+            }
+        });
+
+        JMenuItem resetItem = new JMenuItem(LocaleManager.getString("load_model_menu_reset"), KeyEvent.VK_R);
+        resetItem.addActionListener((event) -> {
+            mainFrame.dispose();
+            SwingUtilities.invokeLater(() -> {
+                MainApplicationFrame frame = new MainApplicationFrame();
+                frame.setVisible(true);
+            });
+        });
+        ret.add(loadFromJarItem);
+        ret.add(resetItem);
+        return ret;
     }
 
     /**
