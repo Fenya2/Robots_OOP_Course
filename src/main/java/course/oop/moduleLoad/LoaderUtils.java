@@ -27,7 +27,6 @@ public class LoaderUtils {
             URLClassLoader urlClassLoader = new URLClassLoader(url);
             Class<IModelService> realisationClass = (Class<IModelService>) urlClassLoader.loadClass("ModelModule");
             IModelService modelService = realisationClass.getDeclaredConstructor().newInstance();
-            System.out.println("lol, chto?");
             return modelService;
         } catch(Exception e) {
             throw new ServiceLoadException(String.format("Can't load ModelService from jar: %s", jarFile));
