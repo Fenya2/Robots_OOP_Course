@@ -20,6 +20,9 @@ import course.oop.moduleLoad.IModelService;
 import course.oop.moduleLoad.LoaderUtils;
 import course.oop.moduleLoad.ServiceLoadException;
 
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 /**
  * Главная строка меню программы.
  * Добавляется к окну {@link MainApplicationFrame}
@@ -48,16 +51,20 @@ public class MainMenuBar extends JMenuBar {
         ret.setMnemonic(KeyEvent.VK_L);
         JMenuItem loadFromJarItem = new JMenuItem(LocaleManager.getString("load_model_menu_from_jar"), KeyEvent.VK_J);
         loadFromJarItem.addActionListener((event) -> {
-            JFileChooser fileDialog = new JFileChooser();
-            int callback = fileDialog.showDialog(null, LocaleManager.getString("load_model_menu_open_file"));
+            JFileChooser fileChooser = new JFileChooser(".");
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("JAR Files", "jar");
+            fileChooser.setFileFilter(filter);
+            int callback = fileChooser.showDialog(null, LocaleManager.getString("load_model_menu_open_file"));
+
             if (callback == JFileChooser.APPROVE_OPTION) {
-                File file = fileDialog.getSelectedFile();
+                File file = fileChooser.getSelectedFile();
                 IModelService modelService = null;
                 try {
                     modelService = LoaderUtils.loadModelServiceFromJar(file);
                 } catch (ServiceLoadException e) {
                     e.printStackTrace();
-                    JOptionPane.showMessageDialog(mainFrame, "Can't load jar-file", "Error", JOptionPane.DEFAULT_OPTION);
+                    JOptionPane.showMessageDialog(mainFrame, "Can't load jar-file", "Error",
+                            JOptionPane.DEFAULT_OPTION);
                     return;
                 }
                 if (modelService != null) {
