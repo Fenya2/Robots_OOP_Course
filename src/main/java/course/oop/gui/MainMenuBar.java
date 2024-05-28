@@ -9,7 +9,9 @@ import java.awt.event.WindowEvent;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 
 import course.oop.locale.UserLocale;
@@ -40,7 +42,7 @@ public class MainMenuBar extends JMenuBar {
 
     /**
      * Возвращает пункт меню с навешанными обработчиками для загрузки модели.
-     * Также добавляет пункт меню вернуться к изначальной модели.
+     * Также добавляет пункт меню - вернуться к модели по умолчанию.
      */
     private JMenu createLoadModelMenu() {
         JMenu ret = new JMenu(LocaleManager.getString("load_model_menu"));
@@ -56,6 +58,8 @@ public class MainMenuBar extends JMenuBar {
                     modelService = LoaderUtils.loadModelServiceFromJar(file);
                 } catch (ServiceLoadException e) {
                     e.printStackTrace();
+                    JOptionPane.showMessageDialog(mainFrame, "Can't load jar-file", "Error", JOptionPane.DEFAULT_OPTION);
+                    return;
                 }
                 if (modelService != null) {
                     modelService.init(file);
