@@ -13,7 +13,8 @@ public class LoaderUtils {
     }
 
     /**
-     * Функция, отвечающая за загрузку класса с полным именем ModelModule, реализующий
+     * Функция, отвечающая за загрузку класса с полным именем ModelModule,
+     * реализующий
      * интерфейс ModelService из jar-файла. Загрузка оставшихся классов делегируется
      * загруженному классу сервиса, так как он лучше знает, как устроен jar-файл,
      * в котором лежал сам.
@@ -28,8 +29,8 @@ public class LoaderUtils {
             Class<IModelService> realisationClass = (Class<IModelService>) urlClassLoader.loadClass("ModelModule");
             IModelService modelService = realisationClass.getDeclaredConstructor().newInstance();
             return modelService;
-        } catch(Exception e) {
-            throw new ServiceLoadException(String.format("Can't load ModelService from jar: %s", jarFile));
+        } catch (Exception e) {
+            throw new ServiceLoadException("Can't load ModelService from jar: " + jarFile, e);
         }
     }
 }

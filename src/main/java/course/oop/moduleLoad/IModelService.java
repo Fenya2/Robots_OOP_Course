@@ -15,17 +15,16 @@ public interface IModelService {
      * (загружает классы, создает объекты, связывает их,
      * чтобы можно было пользоваться).
      */
-    public void init(File jarFile);
+    void init(File jarFile);
 
-    
     /**
      * Возвращает представления, предоставляемые сервисом, связанные с моделью,
      * инкапсулированной в сервисе.
      */
-    public JInternalFrame[] getViews();
+    JInternalFrame[] getViews();
 
     /**
      * Запускает сервис
      */
-    public void start();
+    void start();
 }
