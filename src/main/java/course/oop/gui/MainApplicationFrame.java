@@ -5,8 +5,6 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
@@ -20,6 +18,7 @@ import course.oop.controller.GameController;
 import course.oop.locale.LocaleManager;
 import course.oop.log.Logger;
 import course.oop.model.GameModel;
+import course.oop.moduleLoad.IModelService;
 import course.oop.saving.Saveable;
 import course.oop.saving.FrameStatesManager;
 import course.oop.saving.LoadException;
@@ -30,21 +29,14 @@ import course.oop.saving.SaveException;
  */
 public class MainApplicationFrame extends JFrame implements Saveable {
     /**
-     * Контейнер, хранящий ссылки на окна-потомки
-     * (так как при сворачивании окон, swing оказывается их убивает.
-     * Следовательно Нужно сохранять ссылки на них)
-     */
-    private final List<Component> childs;
-
-    /**
-     * Создает главное окно программы
+     * Создает главное окно программы c моделью по умолчанию
+     * (которую писали весь семестр)
      */
     public MainApplicationFrame() {
-        LocaleManager localeManager = LocaleManager.getInstance();
         try {
             UIManager.put("OptionPane.yesButtonText",
-                    localeManager.getString("option_pane_yes"));
-            UIManager.put("OptionPane.noButtonText", localeManager.getString("option_pane_no"));
+                    LocaleManager.getString("option_pane_yes"));
+            UIManager.put("OptionPane.noButtonText", LocaleManager.getString("option_pane_no"));
         } catch (Exception e) {
             System.err.println("Не удалось изменить заголовки JOptionPane.");
             e.printStackTrace();
@@ -55,7 +47,6 @@ public class MainApplicationFrame extends JFrame implements Saveable {
             System.err.println("Не удалось задать визуальный стиль программы");
             e.printStackTrace();
         }
-        childs = new ArrayList<>();
 
         // Make the big window be indented 50 pixels from each edge
         // of the screen.
@@ -84,6 +75,18 @@ public class MainApplicationFrame extends JFrame implements Saveable {
         });
 
         gameController.start();
+    }
+
+    /**
+     * Подменяет представление, взяв его из переданного сервиса.
+     */
+    public void changeModel(IModelService modelService) {
+        getContentPane().removeAll();
+        for (JInternalFrame frame : modelService.getViews()) {
+            getContentPane().add(frame);
+        }
+        revalidate();
+        repaint();
     }
 
     /**
@@ -141,7 +144,6 @@ public class MainApplicationFrame extends JFrame implements Saveable {
      */
     private void addWindow(JInternalFrame frame) {
         getContentPane().add(frame);
-        childs.add(frame);
         frame.setVisible(true);
     }
 
@@ -151,7 +153,7 @@ public class MainApplicationFrame extends JFrame implements Saveable {
     private void saveWindowStates() {
         FrameStatesManager frameSaver = new FrameStatesManager();
         frameSaver.addSaveableFrame(this);
-        for (Component component : childs)
+        for (Component component : getContentPane().getComponents())
             if (component instanceof Saveable saveable)
                 frameSaver.addSaveableFrame(saveable);
 
@@ -185,7 +187,7 @@ public class MainApplicationFrame extends JFrame implements Saveable {
             e.printStackTrace();
         }
 
-        for (Component component : childs) {
+        for (Component component : getContentPane().getComponents()) {
             if (component instanceof Saveable saveable) {
                 try {
                     frameLoader.loadFrame(saveable);
